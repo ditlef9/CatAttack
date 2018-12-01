@@ -56,9 +56,9 @@ class Main:
         self.pieceCatBlue = Piece("blue", "cat", "b1")
         self.pieceDogBlue = Piece("blue", "dog", "c1")
         self.pieceSheepBlue = Piece("blue", "sheep", "b2")
-        self.pieceMonkeyRed = Piece("red", "monkey", "a4")
+        self.pieceMonkeyRed = Piece("red", "monkey", "c4")
         self.pieceCatRed = Piece("red", "cat", "b4")
-        self.pieceDogRed = Piece("red", "dog", "c4")
+        self.pieceDogRed = Piece("red", "dog", "a4")
         self.pieceSheepRed = Piece("red", "sheep", "b3")
         
         self.gameBoardPieces[0][0] = "monkeyBlue"
