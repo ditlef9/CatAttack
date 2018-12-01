@@ -66,9 +66,9 @@ class Main:
         self.gameBoardPieces[0][2] = "dogBlue"
         self.gameBoardPieces[1][1] = "sheepBlue"
         
-        self.gameBoardPieces[3][0] = "monkeyRed"
+        self.gameBoardPieces[3][0] = "dogRed"
         self.gameBoardPieces[3][1] = "catRed"
-        self.gameBoardPieces[3][2] = "dogRed"
+        self.gameBoardPieces[3][2] = "monkeyRed"
         self.gameBoardPieces[2][1] = "sheepRed"
         
         
