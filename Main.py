@@ -61,6 +61,7 @@ class Main:
         self.gameboard[3, 2] = Monkey("red", "monkey", "monkey_red_128", -1, "c4");
         self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
 
+
     #- The game it self --------------------------------------------------------------------------------------------- #
     def main(self):
 
