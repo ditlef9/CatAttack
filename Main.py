@@ -56,9 +56,9 @@ class Main:
         self.gameboard[0, 2] = Dog("blue", "dog", "dog_blue_128", 1, "c1");
         self.gameboard[1, 1] = Sheep("blue", "sheep", "sheep_blue_128", 1, "b2");
 
-        self.gameboard[3, 0] = Monkey("red", "monkey", "monkey_red_128", -1, "a4");
+        self.gameboard[3, 0] = Dog("red", "dog", "dog_red_128", -1, "a4")
         self.gameboard[3, 1] = Cat("red", "cat", "cat_red_128", -1, "b4")
-        self.gameboard[3, 2] = Dog("red", "dog", "dog_red_128", -1, "c4")
+        self.gameboard[3, 2] = Monkey("red", "monkey", "monkey_red_128", -1, "c4");
         self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
 
 
