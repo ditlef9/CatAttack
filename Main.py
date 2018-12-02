@@ -128,10 +128,18 @@ class Main:
             textsurface = self.fontArial.render('4', False, (0, 0, 0))
             self.screen.blit(textsurface, (625, 60))
 
+            # Draw whos turn it is
+            if (self.gameWhosTurn == "red"):
+                textsurface = self.fontArial.render('Reds turn!', False, (0, 0, 0))
+                self.screen.blit(textsurface, (800, 60))
+            else:
+                textsurface = self.fontArial.render('Blues turn!', False, (0, 0, 0))
+                self.screen.blit(textsurface, (800, 60))
 
             # Print board
             # Can also printBoardToConsole for debug
             self.printBoardToGraphics()
+
 
 
             # Draw
@@ -209,6 +217,27 @@ class Main:
         }
         return position.get(pos)
 
+    #- Positions, X, Y ---------------------------------------------------------------------------------------------- #
+    # Takes in a position as "a1", "a2", etc and gives array back
+    def getPositionInArray(self, pos):
+        position = {
+            "a1": (0, 0),
+            "b1": (0, 1),
+            "c1": (0, 2),
+
+            "a2": (1, 0),
+            "b2": (1, 1),
+            "c2": (1, 2),
+
+            "a3": (2, 0),
+            "b3": (2, 1),
+            "c3": (2, 2),
+
+            "a4": (3, 0),
+            "b4": (3, 1),
+            "c4": (3, 2),
+        }
+        return position.get(pos)
 
 
 
@@ -269,13 +298,17 @@ class Main:
                     piece.isActive = "true"
                     mode = "setActiveAPiece"
                     self.gameActivePieceName = piece.name
+
+                    # Play sound
+                    soundName = "sound/" + piece.name + ".mp3"
+                    pygame.mixer.music.load(soundName)
+                    pygame.mixer.music.play(0)
                 else:
                     piece.isActive = "false"
 
 
 
         if(mode == ""):
-            print("I want to move " + self.gameWhosTurn + " " + self.gameActivePieceName + " to " + clickedOnPositionBoard)
             # Do the switch
             for position,piece in self.gameboard.items():
 
@@ -284,8 +317,26 @@ class Main:
                     # TODO: Check if I have won
                     # TODO: Change turn, blues turn after red etc
                     # TODO: Update gameboard array
-                    piece.position = clickedOnPositionBoard
 
+                    print("\n\n")
+                    print("I want to move " + self.gameWhosTurn + " " + self.gameActivePieceName)
+                    print("from " + piece.position + " " + str(self.getPositionInArray(piece.position)))
+                    print("to " + clickedOnPositionBoard + " " + str(self.getPositionInArray(clickedOnPositionBoard)))
 
+                    isTheMoveOk = piece.availableMoves(self.getPositionInArray(piece.position), self.getPositionInArray(clickedOnPositionBoard))
+                    if(isTheMoveOk):
+                        print("Move is ok")
+                        piece.position = clickedOnPositionBoard
+
+                        self.changePlayersTurn()
+
+                    else:
+                        print("Move is not ok")
+
+    def changePlayersTurn(self):
+        if(self.gameWhosTurn == "red"):
+            self.gameWhosTurn = "blue"
+        else:
+            self.gameWhosTurn = "red"
 
 Main()
