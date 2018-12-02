@@ -51,15 +51,15 @@ class Main:
     #- Places pieces in array --------------------------------------------------------------------------------------- #
     def placePieces(self):
 
-        self.gameboard[0, 0] = Monkey("red", "monkey", "monkey_red_128", 1, "a1");
-        self.gameboard[0, 1] = Cat("red", "cat", "cat_red_128", 1, "b1");
-        self.gameboard[0, 2] = Dog("red", "dog", "dog_red_128", 1, "c1");
-        self.gameboard[1, 1] = Sheep("red", "sheep", "sheep_red_128", 1, "b2");
+        self.gameboard[0, 0] = Monkey("blue", "monkey", "monkey_blue_128", 1, "a1");
+        self.gameboard[0, 1] = Cat("blue", "cat", "cat_blue_128", 1, "b1");
+        self.gameboard[0, 2] = Dog("blue", "dog", "dog_blue_128", 1, "c1");
+        self.gameboard[1, 1] = Sheep("blue", "sheep", "sheep_blue_128", 1, "b2");
 
-        self.gameboard[3, 0] = Monkey("blue", "monkey", "cat_blue_128", -1, "a4");
-        self.gameboard[3, 1] = Cat("blue", "cat", "cat_blue_128", -1, "b4")
-        self.gameboard[3, 2] = Dog("blue", "dog", "dog_blue_128", -1, "c4")
-        self.gameboard[2, 1] = Sheep("blue", "sheep", "sheep_blue_128", -1, "b3")
+        self.gameboard[3, 0] = Monkey("red", "monkey", "monkey_red_128", -1, "a4");
+        self.gameboard[3, 1] = Cat("red", "cat", "cat_red_128", -1, "b4")
+        self.gameboard[3, 2] = Dog("red", "dog", "dog_red_128", -1, "c4")
+        self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
 
 
     #- The game it self --------------------------------------------------------------------------------------------- #
@@ -173,7 +173,11 @@ class Main:
             # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
 
             # Image
-            filename = "animals/" + piece.icon + "" + ".png"
+            if(piece.isActive == "true"):
+                filename = "animals/" + piece.icon + "_active.png"
+            else:
+                filename = "animals/" + piece.icon + ".png"
+
             imagePiece = pygame.image.load(filename)
 
             # Position is pixel
@@ -248,12 +252,14 @@ class Main:
             # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
             # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
 
-            if(piece.position == clickedOnPositionBoard):
+            if(piece.position == clickedOnPositionBoard and piece.color == self.gameWhosTurn):
                 # piece.name = cat
                 # piece.color = red
 
                 # Change icon to active state
                 piece.isActive = "true"
+            else:
+                piece.isActive = "false"
 
 
 
