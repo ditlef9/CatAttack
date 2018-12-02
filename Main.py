@@ -37,12 +37,11 @@ class Main:
 
         # Game variables 
         self.gameWhosTurn = "red"
+        self.gameActivePieceName = "";
 
         # Game Board
-        self.gameboard = {}
-        self.placePieces()
-        w, h = 3, 4
-        self.gameBoardPieces = [[0 for x in range(w)] for y in range(h)]
+        self.gameboard = {} # creates array that holds game
+        self.placePieces() # call method
 
 
         # Start game
@@ -68,7 +67,7 @@ class Main:
         while not self.done:
             # This limits the while loop to a max of 10 times per second.
             # Leave this out and we will use all CPU we can.
-            self.clock.tick(1)
+            self.clock.tick(10)
 
             for event in pygame.event.get():  # User did something
                 if event.type == pygame.QUIT:  # If user clicked close
@@ -131,7 +130,8 @@ class Main:
 
 
             # Print board
-            self.printBoard()
+            # Can also printBoardToConsole for debug
+            self.printBoardToGraphics()
 
 
             # Draw
@@ -142,7 +142,7 @@ class Main:
 
 
     #- This method first prints the board to console, then print it to the board ------------------------------------ #
-    def printBoard(self):
+    def printBoardToConsole(self):
 
         # a) Print to console
         print("\n\n ")
@@ -167,6 +167,7 @@ class Main:
         itemC4 = self.gameboard.get((3, 2))
         print("[2] C", str(itemC1) + " | ", str(itemC2), " | ", str(itemC3), " | ", str(itemC4), " ")
 
+    def printBoardToGraphics(self):
         # b) Print to board
         for position,piece in self.gameboard.items():
             # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
@@ -194,11 +195,11 @@ class Main:
             "b1": (110, 260),
             "c1": (110, 410),
 
-            "a2": (260, 210),
+            "a2": (260, 110),
             "b2": (260, 260),
             "c2": (260, 410),
 
-            "a3": (410, 210),
+            "a3": (410, 110),
             "b3": (410, 260),
             "c3": (410, 410),
 
@@ -247,19 +248,43 @@ class Main:
     # - Take some random square and give back what piece is in that square -------------------------------------------#
     # input = a1, a2, a3, b1, etc
     def selectOrMovePiece(self, clickedOnPositionBoard):
+
         # Find the animal located at that position
+        mode = ""
         for position,piece in self.gameboard.items():
             # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
             # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
 
-            if(piece.position == clickedOnPositionBoard and piece.color == self.gameWhosTurn):
-                # piece.name = cat
-                # piece.color = red
+            if(piece.color == self.gameWhosTurn):
 
-                # Change icon to active state
-                piece.isActive = "true"
-            else:
-                piece.isActive = "false"
+
+                if(piece.position == clickedOnPositionBoard ):
+                    # piece.name = cat
+                    # piece.color = red
+
+                    # is the icon already active? Then we are on a move,
+                    # if the icon is NOT active, then set it active, next click is move
+
+                    # Change icon to active state
+                    piece.isActive = "true"
+                    mode = "setActiveAPiece"
+                    self.gameActivePieceName = piece.name
+                else:
+                    piece.isActive = "false"
+
+
+
+        if(mode == ""):
+            print("I want to move " + self.gameWhosTurn + " " + self.gameActivePieceName + " to " + clickedOnPositionBoard)
+            # Do the switch
+            for position,piece in self.gameboard.items():
+
+                if (piece.name == self.gameActivePieceName and piece.color == self.gameWhosTurn):
+                    # TODO: Check if I am allowed to do this switch
+                    # TODO: Check if I have won
+                    # TODO: Change turn, blues turn after red etc
+                    # TODO: Update gameboard array
+                    piece.position = clickedOnPositionBoard
 
 
 
