@@ -3,14 +3,10 @@ import Board
 
 class Piece:
     
-    CAT = "cat"
-    DOG = "dog"
-    MONKEY = "monkey"
-    SHEEP = "sheep"
-    
-    def __init__(self, color, name, position):
+
+    def __init__(self, color, animal, position):
         self.color = color
-        self.name = name
+        self.animal = animal
         self.position = position
         self.isActive = False
         self.imagePiece = ""
@@ -29,7 +25,7 @@ class Piece:
 
                 
         # Image
-        self.imagePiece = pygame.image.load(getImagePath(self.name, self.color, self.isActive))
+        self.imagePiece = pygame.image.load(getImagePath(self.animal, self.color, self.isActive))
 
         # Positions, X, Y
         positionInPixels = Board.getPositionInPixels(self.position) #list
