@@ -1,10 +1,9 @@
-import math
-import os
 import pygame
 
-from Board import Board
-from Piece import Piece
 from Cat import Cat
+from Dog import Dog
+from Monkey import Monkey
+from Sheep import Sheep
 
 
 class Main:
@@ -38,41 +37,38 @@ class Main:
 
         # Game variables 
         self.gameWhosTurn = "red"
-        self.gameCurrentActivePiece = ""
 
         # Game Board
+        self.gameboard = {}
+        self.placePieces()
         w, h = 3, 4
         self.gameBoardPieces = [[0 for x in range(w)] for y in range(h)]
 
-        # Init pieces
-        self.pieceMonkeyBlue = Piece("blue", "monkey", "a1")
-        self.pieceCatBlue = Piece("blue", "cat", "b1")
-        self.pieceDogBlue = Piece("blue", "dog", "c1")
-        self.pieceSheepBlue = Piece("blue", "sheep", "b2")
-        self.pieceMonkeyRed = Piece("red", "monkey", "c4")
-        self.pieceCatRed = Piece("red", "cat", "b4")
-        self.pieceDogRed = Piece("red", "dog", "a4")
-        self.pieceSheepRed = Piece("red", "sheep", "b3")
 
         # Start game
         self.main()
 
+    #- Places pieces in array --------------------------------------------------------------------------------------- #
+    def placePieces(self):
+
+        self.gameboard[0, 0] = Monkey("red", "monkey", "monkey_red_128", 1, "a1");
+        self.gameboard[0, 1] = Cat("red", "cat", "cat_red_128", 1, "b1");
+        self.gameboard[0, 2] = Dog("red", "dog", "dog_red_128", 1, "c1");
+        self.gameboard[1, 1] = Sheep("red", "sheep", "sheep_red_128", 1, "b2");
+
+        self.gameboard[3, 0] = Monkey("blue", "monkey", "cat_blue_128", -1, "a4");
+        self.gameboard[3, 1] = Cat("blue", "cat", "cat_blue_128", -1, "b4")
+        self.gameboard[3, 2] = Dog("blue", "dog", "dog_blue_128", -1, "c4")
+        self.gameboard[2, 1] = Sheep("blue", "sheep", "sheep_blue_128", -1, "b3")
+
+
+    #- The game it self --------------------------------------------------------------------------------------------- #
     def main(self):
-
-        self.gameBoardPieces[0][0] = "monkeyBlue"
-        self.gameBoardPieces[0][1] = "catBlue"
-        self.gameBoardPieces[0][2] = "dogBlue"
-        self.gameBoardPieces[1][1] = "sheepBlue"
-
-        self.gameBoardPieces[3][0] = "dogRed"
-        self.gameBoardPieces[3][1] = "catRed"
-        self.gameBoardPieces[3][2] = "monkeyRed"
-        self.gameBoardPieces[2][1] = "sheepRed"
 
         while not self.done:
             # This limits the while loop to a max of 10 times per second.
             # Leave this out and we will use all CPU we can.
-            self.clock.tick(5)
+            self.clock.tick(1)
 
             for event in pygame.event.get():  # User did something
                 if event.type == pygame.QUIT:  # If user clicked close
@@ -88,8 +84,6 @@ class Main:
                     break
 
 
-            # All drawing code happens after the for loop and but
-            # inside the main while done==False loop.
 
             # Clear the screen and set the screen background
             self.screen.fill((255, 255, 255))
@@ -135,24 +129,10 @@ class Main:
             textsurface = self.fontArial.render('4', False, (0, 0, 0))
             self.screen.blit(textsurface, (625, 60))
 
-            # Draw pieces
-            self.pieceMonkeyBlue.addPieceToBoard(pygame, self.screen)
-            self.pieceCatBlue.addPieceToBoard(pygame, self.screen)
-            self.pieceDogBlue.addPieceToBoard(pygame, self.screen)
-            self.pieceSheepBlue.addPieceToBoard(pygame, self.screen)
 
-            self.pieceMonkeyRed.addPieceToBoard(pygame, self.screen)
-            self.pieceCatRed.addPieceToBoard(pygame, self.screen)
-            self.pieceDogRed.addPieceToBoard(pygame, self.screen)
-            self.pieceSheepRed.addPieceToBoard(pygame, self.screen)
+            # Print board
+            self.printBoard()
 
-            # Whos turn?
-            if (self.gameWhosTurn == "red"):
-                textsurface = self.fontArialH1.render('Reds turn', False, (0, 0, 0))
-                self.screen.blit(textsurface, (800, 20))
-            elif (self.gameWhosTurn == "red"):
-                textsurface = self.fontArialH1.render('Blues turn', False, (0, 0, 0))
-                self.screen.blit(textsurface, (800, 20))
 
             # Draw
             pygame.display.flip()
@@ -160,7 +140,75 @@ class Main:
         # Be IDLE friendly
         pygame.quit()
 
-    # - Take some random position clicked and return the square (example a1) ---#
+
+    #- This method first prints the board to console, then print it to the board ------------------------------------ #
+    def printBoard(self):
+
+        # a) Print to console
+        print("\n\n ")
+        print("[0] 1 | [1] 2 | [2] 3 | [3] 4 ")
+
+        itemA1 = self.gameboard.get((0, 0))
+        itemA2 = self.gameboard.get((1, 0))
+        itemA3 = self.gameboard.get((2, 0))
+        itemA4 = self.gameboard.get((3, 0))
+        print("[0] A", str(itemA1) + " | ", str(itemA2), " | ", str(itemA3), " | ", str(itemA4), " ")
+
+
+        itemB1 = self.gameboard.get((0, 1))
+        itemB2 = self.gameboard.get((1, 1))
+        itemB3 = self.gameboard.get((2, 1))
+        itemB4 = self.gameboard.get((3, 1))
+        print("[1] B", str(itemB1) + " | ", str(itemB2), " | ", str(itemB3), " | ", str(itemB4), " ")
+
+        itemC1 = self.gameboard.get((0, 2))
+        itemC2 = self.gameboard.get((1, 2))
+        itemC3 = self.gameboard.get((2, 2))
+        itemC4 = self.gameboard.get((3, 2))
+        print("[2] C", str(itemC1) + " | ", str(itemC2), " | ", str(itemC3), " | ", str(itemC4), " ")
+
+        # b) Print to board
+        for position,piece in self.gameboard.items():
+            # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
+            # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
+
+            # Image
+            filename = "animals/" + piece.icon + "" + ".png"
+            imagePiece = pygame.image.load(filename)
+
+            # Position is pixel
+            positionInPixels = self.getPositionInPixels(piece.position)  # list
+
+            self.screen.blit(imagePiece, positionInPixels)
+
+
+    #- Positions, X, Y ---------------------------------------------------------------------------------------------- #
+    # Takes in a position as "a1", "a2", etc and gives pixels back
+    def getPositionInPixels(self, pos):
+        position = {
+            "a1": (110, 110),
+            "b1": (110, 260),
+            "c1": (110, 410),
+
+            "a2": (260, 210),
+            "b2": (260, 260),
+            "c2": (260, 410),
+
+            "a3": (410, 210),
+            "b3": (410, 260),
+            "c3": (410, 410),
+
+            "a4": (560, 110),
+            "b4": (560, 260),
+            "c4": (560, 410),
+        }
+        return position.get(pos)
+
+
+
+
+    # - Take some random position clicked and return the square (example a1) ------------------------------------------#
+    # input = 100, 200,
     def clickPositionPixelToPositionBoard(self, clickPositionPixelX, clickPositionPixelY):
         boardPositionX = ""
         boardPositionY = ""
@@ -191,54 +239,22 @@ class Main:
 
         return xy
 
-    # - Take some random square and give back what piece is in that square -----#
-    # Also change the active state to the selected piece
+
+    # - Take some random square and give back what piece is in that square -------------------------------------------#
+    # input = a1, a2, a3, b1, etc
     def selectOrMovePiece(self, clickedOnPositionBoard):
+        # Find the animal located at that position
+        for position,piece in self.gameboard.items():
+            # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
+            # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
 
-        # We either already have a piece active, or we are going to select a piece
-        if (self.gameCurrentActivePiece == ""):
+            if(piece.position == clickedOnPositionBoard):
+                # piece.name = cat
+                # piece.color = red
 
-            # Set all inactive
-            self.pieceMonkeyBlue.setActive(False)
-            self.pieceCatBlue.setActive(False)
-            self.pieceDogBlue.setActive(False)
-            self.pieceSheepBlue.setActive(False)
-            self.pieceMonkeyRed.setActive(False)
-            self.pieceCatRed.setActive(False)
-            self.pieceDogRed.setActive(False)
-            self.pieceSheepRed.setActive(False)
+                # Change icon to active state
+                piece.isActive = "true"
 
-            if (self.pieceMonkeyBlue.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "blue"):
-                self.pieceMonkeyBlue.setActive(True)
-                self.gameCurrentActivePiece = "monkeyBlue"
-            elif (self.pieceCatBlue.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "blue"):
-                self.pieceCatBlue.setActive(True)
-                self.gameCurrentActivePiece = "catBlue"
-            elif (self.pieceDogBlue.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "blue"):
-                self.pieceDogBlue.setActive(True)
-                self.gameCurrentActivePiece = "dogBlue"
-            elif (self.pieceSheepBlue.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "blue"):
-                self.pieceSheepBlue.setActive(True)
-                self.gameCurrentActivePiece = "sheepBlue"
-            if (self.pieceMonkeyRed.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "red"):
-                self.pieceMonkeyRed.setActive(True)
-                self.gameCurrentActivePiece = "monkeyRed"
-            elif (self.pieceCatRed.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "red"):
-                self.pieceCatRed.setActive(True)
-                self.gameCurrentActivePiece = "catRed"
-            elif (self.pieceDogRed.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "red"):
-                self.pieceDogRed.setActive(True)
-                self.gameCurrentActivePiece = "dogRed"
-            elif (self.pieceSheepRed.getPosition() == clickedOnPositionBoard and self.gameWhosTurn == "red"):
-                self.pieceSheepRed.setActive(True)
-                self.gameCurrentActivePiece = "sheepRed"
-            else:
-                self.gameCurrentActivePiece = ""
-
-            return self.gameCurrentActivePiece;
-
-        else:
-            print("Where do you want to move it?")
 
 
 Main()

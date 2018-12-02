@@ -1,8 +1,7 @@
-import Board
+from Piece import Piece
 
 
-class Piece:
-
+class Monkey(Piece):
 
     def __init__(self, color, name, icon, direction, position):
         self.color = color          # Blue or Red
@@ -12,3 +11,12 @@ class Piece:
         self.direction = direction  # 1 = Facing right, -1 = Facing left
         self.position = position    # Where on the board the piece is, is used for drawing only
 
+    def availableMoves(self, currentPos, wantedPos):
+        x = currentPos[0]
+        y = currentPos[1]
+        x_new = wantedPos[0]
+        y_new = wantedPos[1]
+
+        one_forward_backward = (x + 1 == x_new or x - 1 == x_new) and y == y_new
+        one_left_right = (y + 1 == y_new or y - 1 == y_new) and x == x_new
+        return one_forward_backward or one_left_right
