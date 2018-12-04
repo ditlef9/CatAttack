@@ -17,6 +17,8 @@ class Sheep(Piece):
         x_new = wantedPos[0]
         y_new = wantedPos[1]
 
+        # Todo: Check that piece.position is ok?
+
         one_forward_backward = (x + 1 == x_new or x - 1 == x_new) and y == y_new
         return one_forward_backward
 
