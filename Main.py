@@ -53,6 +53,8 @@ class Main:
 
         # Game Board
         self.gameboard = {} # creates array that holds game
+        self.deadBoardRed =  ["" for x in range(4)]
+        self.deadboardBlue = ["" for x in range(4)]
         self.placePieces() # call method
 
         # Texts
@@ -115,54 +117,54 @@ class Main:
             self.screen.blit(self.bg, (0, 0))
 
             # Draw Board Xstart Ystart, Xstop, Ystop (diff is always 150 px)
-            pygame.draw.rect(self.screen, self.colorYellow, [100, 100, 150, 150], 2)  # A1
-            pygame.draw.rect(self.screen, self.colorYellow, [100, 250, 150, 150], 2)  # B1
-            pygame.draw.rect(self.screen, self.colorYellow, [100, 400, 150, 150], 2)  # C1
+            pygame.draw.rect(self.screen, self.colorYellow, [250, 200, 150, 150], 2)  # A1
+            pygame.draw.rect(self.screen, self.colorYellow, [250, 350, 150, 150], 2)  # B1
+            pygame.draw.rect(self.screen, self.colorYellow, [250, 500, 150, 150], 2)  # C1
 
-            pygame.draw.rect(self.screen, self.colorYellow, [250, 100, 150, 150], 2)  # A2
-            pygame.draw.rect(self.screen, self.colorYellow, [250, 250, 150, 150], 2)  # B2
-            pygame.draw.rect(self.screen, self.colorYellow, [250, 400, 150, 150], 2)  # C2
+            pygame.draw.rect(self.screen, self.colorYellow, [400, 200, 150, 150], 2)  # A2
+            pygame.draw.rect(self.screen, self.colorYellow, [400, 350, 150, 150], 2)  # B2
+            pygame.draw.rect(self.screen, self.colorYellow, [400, 500, 150, 150], 2)  # C2
 
-            pygame.draw.rect(self.screen, self.colorYellow, [400, 100, 150, 150], 2)  # A3
-            pygame.draw.rect(self.screen, self.colorYellow, [400, 250, 150, 150], 2)  # B3
-            pygame.draw.rect(self.screen, self.colorYellow, [400, 400, 150, 150], 2)  # C3
+            pygame.draw.rect(self.screen, self.colorYellow, [550, 200, 150, 150], 2)  # A3
+            pygame.draw.rect(self.screen, self.colorYellow, [550, 350, 150, 150], 2)  # B3
+            pygame.draw.rect(self.screen, self.colorYellow, [550, 500, 150, 150], 2)  # C3
 
-            pygame.draw.rect(self.screen, self.colorYellow, [550, 100, 150, 150], 2)  # A4
-            pygame.draw.rect(self.screen, self.colorYellow, [550, 250, 150, 150], 2)  # B4
-            pygame.draw.rect(self.screen, self.colorYellow, [550, 400, 150, 150], 2)  # C4
+            pygame.draw.rect(self.screen, self.colorYellow, [700, 200, 150, 150], 2)  # A4
+            pygame.draw.rect(self.screen, self.colorYellow, [700, 350, 150, 150], 2)  # B4
+            pygame.draw.rect(self.screen, self.colorYellow, [700, 500, 150, 150], 2)  # C4
 
             textsurface = self.fontArial.render('A', False, (0, 0, 0))
-            self.screen.blit(textsurface, (70, 175))
+            self.screen.blit(textsurface, (220, 275))
 
             textsurface = self.fontArial.render('B', False, (0, 0, 0))
-            self.screen.blit(textsurface, (70, 325))
+            self.screen.blit(textsurface, (220, 425))
 
             textsurface = self.fontArial.render('C', False, (0, 0, 0))
-            self.screen.blit(textsurface, (70, 475))
+            self.screen.blit(textsurface, (220, 575))
 
             textsurface = self.fontArial.render('1', False, (0, 0, 0))
-            self.screen.blit(textsurface, (175, 60))
+            self.screen.blit(textsurface, (325, 160))
 
             textsurface = self.fontArial.render('2', False, (0, 0, 0))
-            self.screen.blit(textsurface, (325, 60))
+            self.screen.blit(textsurface, (475, 160))
 
             textsurface = self.fontArial.render('3', False, (0, 0, 0))
-            self.screen.blit(textsurface, (475, 60))
+            self.screen.blit(textsurface, (625, 160))
 
             textsurface = self.fontArial.render('4', False, (0, 0, 0))
-            self.screen.blit(textsurface, (625, 60))
+            self.screen.blit(textsurface, (775, 160))
 
             # Draw whos turn it is
             if (self.gameWhosTurn == "red"):
-                textsurface = self.fontArialH1.render('Reds turn!', False, (0, 0, 0))
-                self.screen.blit(textsurface, (800, 60))
+                textsurface = self.fontArialH1.render('Reds turn!', True, (0, 0, 0))
+                self.screen.blit(textsurface, (400, 60))
             else:
                 textsurface = self.fontArialH1.render('Blues turn!', False, (0, 0, 0))
-                self.screen.blit(textsurface, (800, 60))
+                self.screen.blit(textsurface, (400, 60))
 
             # Status text
             textsurface = self.fontArial.render(self.statusText, False, (0, 0, 0))
-            self.screen.blit(textsurface, (800, 120))
+            self.screen.blit(textsurface, (400, 110))
 
 
             # Print board
@@ -173,7 +175,7 @@ class Main:
             if(self.gameWinner == "red" or self.gameWinner == "blue"):
                 filename = "animals/cat_" + self.gameWinner + "_512.png"
                 imagePiece = pygame.image.load(filename)
-                self.screen.blit(imagePiece, (150, 150))
+                self.screen.blit(imagePiece, (300, 150))
 
 
             # Draw
@@ -233,21 +235,21 @@ class Main:
     # Takes in a position as "a1", "a2", etc and gives pixels back
     def getPositionInPixels(self, pos):
         position = {
-            "a1": (110, 110),
-            "b1": (110, 260),
-            "c1": (110, 410),
+            "a1": (260, 210),
+            "b1": (260, 360),
+            "c1": (260, 510),
 
-            "a2": (260, 110),
-            "b2": (260, 260),
-            "c2": (260, 410),
+            "a2": (410, 210),
+            "b2": (410, 360),
+            "c2": (410, 510),
 
-            "a3": (410, 110),
-            "b3": (410, 260),
-            "c3": (410, 410),
+            "a3": (560, 210),
+            "b3": (560, 360),
+            "c3": (560, 510),
 
-            "a4": (560, 110),
-            "b4": (560, 260),
-            "c4": (560, 410),
+            "a4": (710, 210),
+            "b4": (710, 360),
+            "c4": (710, 510),
         }
         return position.get(pos)
 
@@ -281,24 +283,24 @@ class Main:
         boardPositionX = ""
         boardPositionY = ""
 
-        if (clickPositionPixelX > 100 and clickPositionPixelX < 250):
+        if (clickPositionPixelX > 250 and clickPositionPixelX < 400):
             boardPositionX = "1"
-        elif (clickPositionPixelX > 250 and clickPositionPixelX < 400):
-            boardPositionX = "2"
         elif (clickPositionPixelX > 400 and clickPositionPixelX < 550):
-            boardPositionX = "3"
+            boardPositionX = "2"
         elif (clickPositionPixelX > 550 and clickPositionPixelX < 700):
+            boardPositionX = "3"
+        elif (clickPositionPixelX > 700 and clickPositionPixelX < 850):
             boardPositionX = "4"
         else:
             boardPositionX = "-1"
 
-        if (clickPositionPixelY > 100 and clickPositionPixelY < 250):
+        if (clickPositionPixelY > 200 and clickPositionPixelY < 350):
             boardPositionY = "a"
-        elif (clickPositionPixelY > 250 and clickPositionPixelY < 400):
+        elif (clickPositionPixelY > 350 and clickPositionPixelY < 500):
             boardPositionY = "b"
-        elif (clickPositionPixelY > 400 and clickPositionPixelY < 550):
+        elif (clickPositionPixelY > 500 and clickPositionPixelY < 650):
             boardPositionY = "c"
-        elif (clickPositionPixelY > 550 and clickPositionPixelY < 700):
+        elif (clickPositionPixelY > 650 and clickPositionPixelY < 800):
             boardPositionY = "d"
         else:
             boardPositionY = "Y Out of range", clickPositionPixelY
@@ -395,6 +397,9 @@ class Main:
 
                         # Fill old placement with blank
                         self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
+
+                        # Add the pice to dead list
+                        # TODO: Dead list
 
 
                         # Switch turn
