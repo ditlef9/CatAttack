@@ -39,6 +39,7 @@ class Main:
 
         # Game variables
         self.gameActivePieceName = "";
+        self.gameWinner = "" # to print on the screen
 
         # Whos turn it is?
         randomNumber = random.randint(0, 2)
@@ -98,7 +99,9 @@ class Main:
 
                     clickedOnPositionBoard = self.clickPositionPixelToPositionBoard(clickPositionPixelX,
                                                                                     clickPositionPixelY)
-                    clickedOnPiece = self.selectOrMovePiece(clickedOnPositionBoard)
+
+                    if(self.gameWinner == ""):
+                        self.selectOrMovePiece(clickedOnPositionBoard)
 
                     break
 
@@ -165,6 +168,11 @@ class Main:
             # Can also printBoardToConsole for debug
             self.printBoardToGraphics()
 
+            # Print winner
+            if(self.gameWinner == "red" or self.gameWinner == "blue"):
+                filename = "animals/cat_" + self.gameWinner + "_512.png"
+                imagePiece = pygame.image.load(filename)
+                self.screen.blit(imagePiece, (150, 150))
 
 
             # Draw
@@ -397,30 +405,9 @@ class Main:
 
 
 
+        self.checkIfIHaveWon()
 
 
-        # Check if I have won?
-        redHasPiecesLeft = "false"
-        blueHasPiecesLeft = "false"
-        for position, piece in self.gameboard.items():
-            if (piece.color == "red"):
-                redHasPiecesLeft = "true"
-            elif (piece.color == "blue"):
-                blueHasPiecesLeft = "true"
-
-        if(redHasPiecesLeft == "false"):
-            self.statusText = "Blue won!!!"
-            soundName = "sound/blue_won.mp3"
-            pygame.mixer.music.load(soundName)
-            pygame.mixer.music.play(0)
-        if (blueHasPiecesLeft == "false"):
-            self.statusText = "Red won!!!"
-            soundName = "sound/red_won.mp3"
-            pygame.mixer.music.load(soundName)
-            pygame.mixer.music.play(0)
-
-        self.printBoardToConsole()
-        self.printBoardToGraphics()
 
     def changePlayersTurn(self):
         if(self.gameWhosTurn == "red"):
@@ -431,4 +418,84 @@ class Main:
         soundName = "sound/" + self.gameWhosTurn + ".mp3"
         pygame.mixer.music.load(soundName)
         pygame.mixer.music.play(0)
+
+
+    def checkIfIHaveWon(self):
+
+        # Check if I have won?
+        redHasPiecesLeft = "false"
+        blueHasPiecesLeft = "false"
+
+        # Check if Cat is at the other side of the board
+        redCatEscaped = "false"
+        blueCatEscaped = "false"
+
+        # Check if blue cat or red cat is dead
+        redCatDead = "true"
+        blueCatDead = "true"
+
+        for position, piece in self.gameboard.items():
+
+            # Pieces left
+            if (piece.color == "red"):
+                redHasPiecesLeft = "true"
+            elif (piece.color == "blue"):
+                blueHasPiecesLeft = "true"
+
+
+            # Cat escaped
+            if (piece.color == "red" and piece.name == "cat"):
+                if(piece.position == "a1" or piece.position == "b1" or piece.position == "c1"):
+                    redCatEscaped = "true"
+            elif (piece.color == "blue" and piece.name == "cat"):
+                if(piece.position == "a4" or piece.position == "b4" or piece.position == "c4"):
+                    blueCatEscaped = "true"
+
+            # Cat dead
+            if (piece.color == "red" and piece.name == "cat"):
+                redCatDead = "false"
+            elif (piece.color == "blue" and piece.name == "cat"):
+                blueCatDead = "false"
+
+
+        # Print message and sound
+        if(redHasPiecesLeft == "false" or blueCatEscaped == "true" or redCatDead == "true"):
+            self.statusText = "Blue won!!!"
+
+            if(blueCatEscaped == "true"):
+                self.statusText = "Blue cat escaped!!"
+
+            if (redCatDead == "true"):
+                self.statusText = "Red cat dead!!"
+
+            soundName = "sound/blue_won.mp3"
+            pygame.mixer.music.load(soundName)
+            pygame.mixer.music.play(0)
+
+
+            # Winner
+            self.gameWinner = "blue"
+
+        if (blueHasPiecesLeft == "false" or redCatEscaped == "true" or blueCatDead == "true"):
+            self.statusText = "Red won!!!"
+
+            if(redCatEscaped == "true"):
+                self.statusText = "Red cat escaped!!"
+
+            if (blueCatDead == "true"):
+                self.statusText = "Blue cat dead!!"
+
+            soundName = "sound/red_won.mp3"
+            pygame.mixer.music.load(soundName)
+            pygame.mixer.music.play(0)
+
+            # Winner
+            self.gameWinner = "red"
+
+
+
+        self.printBoardToConsole()
+        self.printBoardToGraphics()
+
+        # check If
 Main()
