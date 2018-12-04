@@ -22,3 +22,11 @@ class Cat(Piece):
         return one_forward_backward or one_left_right
 
 
+    def getColor(self):
+        return self.color
+
+    def getName(self):
+        return self.name
+
+    def getPosition(self):
+        return self.position

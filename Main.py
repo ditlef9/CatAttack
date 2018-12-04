@@ -1,5 +1,6 @@
 import pygame
 
+from Blank import Blank
 from Cat import Cat
 from Dog import Dog
 from Monkey import Monkey
@@ -43,6 +44,8 @@ class Main:
         self.gameboard = {} # creates array that holds game
         self.placePieces() # call method
 
+        # Texts
+        self.statusText = "Game on!"
 
         # Start game
         self.main()
@@ -50,15 +53,22 @@ class Main:
     #- Places pieces in array --------------------------------------------------------------------------------------- #
     def placePieces(self):
 
+
         self.gameboard[0, 0] = Monkey("blue", "monkey", "monkey_blue_128", 1, "a1");
         self.gameboard[0, 1] = Cat("blue", "cat", "cat_blue_128", 1, "b1");
         self.gameboard[0, 2] = Dog("blue", "dog", "dog_blue_128", 1, "c1");
+
+        self.gameboard[1, 0] = Blank("blank", "blank", "blank", 0, "a2");
         self.gameboard[1, 1] = Sheep("blue", "sheep", "sheep_blue_128", 1, "b2");
+        self.gameboard[1, 2] = Blank("blank", "blank", "blank", 0, "c2");
+
+        self.gameboard[2, 0] = Blank("blank", "blank", "blank", 0, "a3");
+        self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
+        self.gameboard[2, 2] = Blank("blank", "blank", "blank", 0, "c3");
 
         self.gameboard[3, 0] = Dog("red", "dog", "dog_red_128", -1, "a4")
         self.gameboard[3, 1] = Cat("red", "cat", "cat_red_128", -1, "b4")
         self.gameboard[3, 2] = Monkey("red", "monkey", "monkey_red_128", -1, "c4");
-        self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
 
 
     #- The game it self --------------------------------------------------------------------------------------------- #
@@ -130,11 +140,16 @@ class Main:
 
             # Draw whos turn it is
             if (self.gameWhosTurn == "red"):
-                textsurface = self.fontArial.render('Reds turn!', False, (0, 0, 0))
+                textsurface = self.fontArialH1.render('Reds turn!', False, (0, 0, 0))
                 self.screen.blit(textsurface, (800, 60))
             else:
-                textsurface = self.fontArial.render('Blues turn!', False, (0, 0, 0))
+                textsurface = self.fontArialH1.render('Blues turn!', False, (0, 0, 0))
                 self.screen.blit(textsurface, (800, 60))
+
+            # Status text
+            textsurface = self.fontArial.render(self.statusText, False, (0, 0, 0))
+            self.screen.blit(textsurface, (800, 120))
+
 
             # Print board
             # Can also printBoardToConsole for debug
@@ -298,40 +313,105 @@ class Main:
                     piece.isActive = "true"
                     mode = "setActiveAPiece"
                     self.gameActivePieceName = piece.name
+                    self.gameActivePiece = piece
 
                     # Play sound
                     soundName = "sound/" + piece.name + ".mp3"
                     pygame.mixer.music.load(soundName)
                     pygame.mixer.music.play(0)
+
+                    #status Text
+
+                    if (self.gameWhosTurn == "red"):
+                        self.statusText = "Red chooses " + piece.name
+                    else:
+                        self.statusText = "Blue chooses " + piece.name
+
                 else:
                     piece.isActive = "false"
 
 
 
         if(mode == ""):
-            # Do the switch
             for position,piece in self.gameboard.items():
 
-                if (piece.name == self.gameActivePieceName and piece.color == self.gameWhosTurn):
-                    # TODO: Check if I am allowed to do this switch
-                    # TODO: Check if I have won
-                    # TODO: Change turn, blues turn after red etc
-                    # TODO: Update gameboard array
+                if (piece.color == self.gameWhosTurn and piece.name == self.gameActivePieceName):
+
+                    toArray = self.getPositionInArray(clickedOnPositionBoard)
+                    toX = toArray[0]
+                    toY = toArray[1]
+
+                    fromArray = self.getPositionInArray(piece.position)
+                    fromX = fromArray[0]
+                    fromY = fromArray[1]
+
 
                     print("\n\n")
-                    print("I want to move " + self.gameWhosTurn + " " + self.gameActivePieceName)
-                    print("from " + piece.position + " " + str(self.getPositionInArray(piece.position)))
-                    print("to " + clickedOnPositionBoard + " " + str(self.getPositionInArray(clickedOnPositionBoard)))
+                    print("I want to move " + piece.color + " " + piece.name)
+                    print("from " + piece.position + " " + str(self.getPositionInArray(piece.position)) + " " + str(fromX) + " " + str(fromY))
+                    print("to " + clickedOnPositionBoard + " " + str(self.getPositionInArray(clickedOnPositionBoard)) + " " + str(toX) + " " + str(toY))
 
+
+                    # Move OK?
                     isTheMoveOk = piece.availableMoves(self.getPositionInArray(piece.position), self.getPositionInArray(clickedOnPositionBoard))
-                    if(isTheMoveOk):
-                        print("Move is ok")
+
+                    if (isTheMoveOk):
+                        print("Move is ok" + " for " + piece.color + " " + piece.name)
+
+                        # Check crash
+                        pieceTo = self.gameboard[toX, toY]
+                        if (pieceTo.getName() != "blank"):
+                            if (self.gameWhosTurn == "red"):
+                                self.statusText = "Blue " + pieceTo.getName() + " got killed!"
+                            else:
+                                self.statusText = "Red " + pieceTo.getName() + " got killed!"
+                        else:
+                                self.statusText = ""
+
+
+                        # Move it
+                        self.gameboard[toX, toY] = self.gameboard[fromX, fromY]
+
+                        # Move the piece
                         piece.position = clickedOnPositionBoard
 
+                        # Fill old placement with blank
+                        self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
+
+                        # Switch turn
                         self.changePlayersTurn()
 
+
                     else:
-                        print("Move is not ok")
+                        print("Move is not ok" + " for " + piece.color + " " + piece.name)
+
+
+
+
+
+
+        # Check if I have won?
+        redHasPiecesLeft = "false"
+        blueHasPiecesLeft = "false"
+        for position, piece in self.gameboard.items():
+            if (piece.color == "red"):
+                redHasPiecesLeft = "true"
+            elif (piece.color == "blue"):
+                blueHasPiecesLeft = "true"
+
+        if(redHasPiecesLeft == "false"):
+            self.statusText = "Blue won!!!"
+            soundName = "sound/blue_won.mp3"
+            pygame.mixer.music.load(soundName)
+            pygame.mixer.music.play(0)
+        if (blueHasPiecesLeft == "false"):
+            self.statusText = "Red won!!!"
+            soundName = "sound/red_won.mp3"
+            pygame.mixer.music.load(soundName)
+            pygame.mixer.music.play(0)
+
+        self.printBoardToConsole()
+        self.printBoardToGraphics()
 
     def changePlayersTurn(self):
         if(self.gameWhosTurn == "red"):
@@ -339,4 +419,7 @@ class Main:
         else:
             self.gameWhosTurn = "red"
 
+        soundName = "sound/" + self.gameWhosTurn + ".mp3"
+        pygame.mixer.music.load(soundName)
+        pygame.mixer.music.play(0)
 Main()

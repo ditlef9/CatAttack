@@ -20,3 +20,12 @@ class Sheep(Piece):
         one_forward_backward = (x + 1 == x_new or x - 1 == x_new) and y == y_new
         one_left_right = (y + 1 == y_new or y - 1 == y_new) and x == x_new
         return one_forward_backward or one_left_right
+
+    def getColor(self):
+        return self.color
+
+    def getName(self):
+        return self.name
+
+    def getPosition(self):
+        return self.position
