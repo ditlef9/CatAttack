@@ -175,20 +175,20 @@ class Main:
         itemA2 = self.gameboard.get((1, 0))
         itemA3 = self.gameboard.get((2, 0))
         itemA4 = self.gameboard.get((3, 0))
-        print("[0] A", str(itemA1) + " | ", str(itemA2), " | ", str(itemA3), " | ", str(itemA4), " ")
+        print("[0] A", itemA1.getColor() + " " + itemA1.getName() + " | ", itemA2.getColor() + " " + itemA2.getName(), " | ", itemA3.getColor() + " " + itemA3.getName(), " | ", itemA4.getColor() + " " + itemA4.getName(), " ")
 
 
         itemB1 = self.gameboard.get((0, 1))
         itemB2 = self.gameboard.get((1, 1))
         itemB3 = self.gameboard.get((2, 1))
         itemB4 = self.gameboard.get((3, 1))
-        print("[1] B", str(itemB1) + " | ", str(itemB2), " | ", str(itemB3), " | ", str(itemB4), " ")
+        print("[1] B", itemB1.getColor() + " " + itemB1.getName() + " | ", itemB2.getColor() + " " + itemB2.getName(), " | ", itemB3.getColor() + " " + itemB3.getName(), " | ", itemB4.getColor() + " " + itemB4.getName(), " ")
 
         itemC1 = self.gameboard.get((0, 2))
         itemC2 = self.gameboard.get((1, 2))
         itemC3 = self.gameboard.get((2, 2))
         itemC4 = self.gameboard.get((3, 2))
-        print("[2] C", str(itemC1) + " | ", str(itemC2), " | ", str(itemC3), " | ", str(itemC4), " ")
+        print("[2] C", itemC1.getColor() + " " + itemC1.getName() + " | ", itemC2.getColor() + " " + itemC2.getName(), " | ", itemC3.getColor() + " " + itemC3.getName(), " | ", itemC4.getColor() + " " + itemC4.getName(), " ")
 
     def printBoardToGraphics(self):
         # b) Print to board
