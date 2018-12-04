@@ -17,9 +17,16 @@ class Cat(Piece):
         x_new = wantedPos[0]
         y_new = wantedPos[1]
 
+        # dog
         one_forward_backward = (x + 1 == x_new or x - 1 == x_new) and y == y_new
         one_left_right = (y + 1 == y_new or y - 1 == y_new) and x == x_new
-        return one_forward_backward or one_left_right
+
+        # monkey
+        one_forward_left = x + 1 == x_new and y + 1 == y_new
+        one_forward_right = x + 1 == x_new and y - 1 == y_new
+        one_backward_left = x - 1 == x_new and y + 1 == y_new
+        one_backward_right = x - 1 == x_new and y - 1 == y_new
+        return one_forward_backward or one_left_right or one_forward_left or one_forward_right or one_backward_left or one_backward_right
 
 
     def getColor(self):
