@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from Blank import Blank
 from Cat import Cat
@@ -36,9 +37,17 @@ class Main:
         # Create board
         self.bg = pygame.image.load("images/netherlands.jpg")
 
-        # Game variables 
-        self.gameWhosTurn = "red"
+        # Game variables
         self.gameActivePieceName = "";
+
+        # Whos turn it is?
+        randomNumber = random.randint(0, 2)
+        if(randomNumber > 1):
+            self.gameWhosTurn = "red"
+        else:
+            self.gameWhosTurn = "blue"
+        self.changePlayersTurn() # switch it (for sound)
+
 
         # Game Board
         self.gameboard = {} # creates array that holds game
@@ -53,7 +62,7 @@ class Main:
     #- Places pieces in array --------------------------------------------------------------------------------------- #
     def placePieces(self):
 
-
+        # Blue
         self.gameboard[0, 0] = Monkey("blue", "monkey", "monkey_blue_128", 1, "a1");
         self.gameboard[0, 1] = Cat("blue", "cat", "cat_blue_128", 1, "b1");
         self.gameboard[0, 2] = Dog("blue", "dog", "dog_blue_128", 1, "c1");
@@ -62,6 +71,7 @@ class Main:
         self.gameboard[1, 1] = Sheep("blue", "sheep", "sheep_blue_128", 1, "b2");
         self.gameboard[1, 2] = Blank("blank", "blank", "blank", 0, "c2");
 
+        # Red
         self.gameboard[2, 0] = Blank("blank", "blank", "blank", 0, "a3");
         self.gameboard[2, 1] = Sheep("red", "sheep", "sheep_red_128", -1, "b3")
         self.gameboard[2, 2] = Blank("blank", "blank", "blank", 0, "c3");
@@ -380,7 +390,7 @@ class Main:
                         # Switch turn
                         self.changePlayersTurn()
 
-
+                        break
                     else:
                         print("Move is not ok" + " for " + piece.color + " " + piece.name)
 
