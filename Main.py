@@ -5,6 +5,7 @@ from Blank import Blank
 from Cat import Cat
 from Dog import Dog
 from Monkey import Monkey
+from Panda import Panda
 from Sheep import Sheep
 
 
@@ -395,6 +396,7 @@ class Main:
                         # Fill old placement with blank
                         self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
 
+
                         # Switch turn
                         self.changePlayersTurn()
 
@@ -406,6 +408,7 @@ class Main:
 
 
         self.checkIfIHaveWon()
+        self.checkIfLambCanBeUpgradedToSheep()
 
 
 
@@ -498,4 +501,29 @@ class Main:
         self.printBoardToGraphics()
 
         # check If
+
+    def checkIfLambCanBeUpgradedToSheep(self):
+        for position, piece in self.gameboard.items():
+            if (piece.color == "red" and piece.name == "sheep"):
+                if(piece.position == "a1" or piece.position == "b1" or piece.position == "c1"):
+                    self.statusText = "Red lamb became a sheep!"
+
+                    array = self.getPositionInArray(piece.position)
+                    x = array[0]
+                    y = array[1]
+
+                    self.gameboard[x, y] = Panda(piece.color, "panda", "panda_red_128", -1, piece.position);
+
+
+            elif (piece.color == "blue" and piece.name == "sheep"):
+                if(piece.position == "a4" or piece.position == "b4" or piece.position == "c4"):
+                    self.statusText = "Blue lamb became a sheep!"
+
+                    array = self.getPositionInArray(piece.position)
+                    x = array[0]
+                    y = array[1]
+
+                    self.gameboard[x, y] = Panda(piece.color, "panda", "panda_blue_128", 1, piece.position);
+
+
 Main()
