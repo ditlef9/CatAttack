@@ -302,7 +302,7 @@ class Main:
             if(piece.color == self.gameWhosTurn):
 
 
-                if(piece.position == clickedOnPositionBoard ):
+                if(piece.position == clickedOnPositionBoard):
                     # piece.name = cat
                     # piece.color = red
 
@@ -313,7 +313,6 @@ class Main:
                     piece.isActive = "true"
                     mode = "setActiveAPiece"
                     self.gameActivePieceName = piece.name
-                    self.gameActivePiece = piece
 
                     # Play sound
                     soundName = "sound/" + piece.name + ".mp3"
