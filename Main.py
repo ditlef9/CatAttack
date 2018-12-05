@@ -600,6 +600,7 @@ class Main:
 
 
     def freeAnimalFromCage(self, clickedOnPositionBoard, color):
+        # Cant set it out with cat
         print("Freeing from position " + clickedOnPositionBoard + " color " + color)
 
 
