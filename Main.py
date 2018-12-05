@@ -466,10 +466,6 @@ class Main:
                             # Fill old placement with blank
                             self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
 
-                            # Add the pice to dead list
-                            # TODO: Dead list
-
-
                             # Switch turn
                             self.changePlayersTurn()
 
@@ -601,7 +597,26 @@ class Main:
 
     def freeAnimalFromCage(self, clickedOnPositionBoard, color):
         # Cant set it out with cat
-        print("Freeing from position " + clickedOnPositionBoard + " color " + color)
+
+        if(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "a0"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[0]
+        elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "b0"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[1]
+        elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "c0"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[2]
+        elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "d0"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[3]
+        elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "a5"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[0]
+        elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "b5"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[1]
+        elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "c5"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[2]
+        elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "d5"):
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[3]
+
+
+        print("Freeing from position " + clickedOnPositionBoard + " color " + color + ". gameActivePieceName = " + self.gameActivePieceName)
 
 
 
