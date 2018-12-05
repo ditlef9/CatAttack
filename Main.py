@@ -7,7 +7,7 @@ from Dog import Dog
 from Monkey import Monkey
 from Panda import Panda
 from Sheep import Sheep
-
+from SheepZombie import SheepZombie
 
 
 class Main:
@@ -91,7 +91,7 @@ class Main:
         while not self.done:
             # This limits the while loop to a max of 10 times per second.
             # Leave this out and we will use all CPU we can.
-            self.clock.tick(10)
+            self.clock.tick(5)
 
             for event in pygame.event.get():  # User did something
                 if event.type == pygame.QUIT:  # If user clicked close
@@ -235,16 +235,34 @@ class Main:
 
     def printCageToGraphics(self):
 
+        # Print blue cage
         for i in range(len(self.cageBoardBlue)):
             if (self.cageBoardBlue[i] != "blank"):
-                filename = "animals/" + self.cageBoardBlue[i] + "_blue_64.png"
+
+                # Is it active?
+                checkIfActiveName = "cage_" + "blue" + "_" + self.cageBoardBlue[i]
+                if(checkIfActiveName == self.gameActivePieceName):
+                    filename = "animals/" + self.cageBoardBlue[i] + "_blue_64_active.png"
+                    self.statusText = "Free blue " + self.cageBoardBlue[i] + " <3"
+                else:
+                    filename = "animals/" + self.cageBoardBlue[i] + "_blue_64.png"
+
                 imagePiece = pygame.image.load(filename)
                 positionInPixels = (100, 200+(i*70))  # list
                 self.screen.blit(imagePiece, positionInPixels)
 
+        # Print red cage
         for i in range(len(self.cageBoardRed)):
             if (self.cageBoardRed[i] != "blank"):
-                filename = "animals/" + self.cageBoardRed[i] + "_red_64.png"
+
+
+                # Is it active?
+                checkIfActiveName = "cage_" + "red" + "_" + self.cageBoardRed[i]
+                if(checkIfActiveName == self.gameActivePieceName):
+                    filename = "animals/" + self.cageBoardRed[i] + "_red_64_active.png"
+                    self.statusText = "Free red " + self.cageBoardRed[i] + " <3"
+                else:
+                    filename = "animals/" + self.cageBoardRed[i] + "_red_64.png"
                 imagePiece = pygame.image.load(filename)
                 positionInPixels = (930, 200+(i*70))  # list
                 self.screen.blit(imagePiece, positionInPixels)
@@ -356,13 +374,23 @@ class Main:
         # Find the animal located at that position
         mode = ""
 
+        # Do I have an active animal selected, and now is selecting the place where I want to put it?
+        if(self.gameActivePieceName == "cage_red_cat" or self.gameActivePieceName == "cage_red_dog" or self.gameActivePieceName == "cage_red_monkey"):
+            self.freeAnimalFromCage(clickedOnPositionBoard)
+        elif(self.gameActivePieceName == "cage_red_panda" or self.gameActivePieceName == "cage_red_sheep"):
+            self.freeAnimalFromCage(clickedOnPositionBoard)
+        elif(self.gameActivePieceName == "cage_blue_cat" or self.gameActivePieceName == "cage_blue_dog" or self.gameActivePieceName == "cage_blue_monkey"):
+            self.freeAnimalFromCage(clickedOnPositionBoard)
+        elif(self.gameActivePieceName == "cage_blue_panda" or self.gameActivePieceName == "cage_blue_sheep"):
+            self.freeAnimalFromCage(clickedOnPositionBoard)
+
         # Look in cage first
         if(clickedOnPositionBoard == "a0" or clickedOnPositionBoard == "b0" or clickedOnPositionBoard == "c0" or clickedOnPositionBoard == "d0"):
             mode = "free_animal_from_blue_cage"
-            self.freeAnimalFromCage(clickedOnPositionBoard, "blue")
+            self.selectAnimalInCage(clickedOnPositionBoard, "blue")
         elif(clickedOnPositionBoard == "a5" or clickedOnPositionBoard == "b5" or clickedOnPositionBoard == "c5" or clickedOnPositionBoard == "d5"):
             mode = "free_animal_from_red_cage"
-            self.freeAnimalFromCage(clickedOnPositionBoard, "red")
+            self.selectAnimalInCage(clickedOnPositionBoard, "red")
 
         # Look on board
         for position,piece in self.gameboard.items():
@@ -441,7 +469,10 @@ class Main:
                                     # Capture the piece
                                     for i in range(len(self.cageBoardRed)):
                                         if(self.cageBoardRed[i] == "blank"):
-                                            self.cageBoardRed[i] = pieceTo.getName()
+                                            if(pieceTo.getName() == "sheepzonbie"):
+                                                self.cageBoardRed[i] = "sheep"
+                                            else:
+                                                self.cageBoardRed[i] = pieceTo.getName()
                                             break
 
 
@@ -451,7 +482,10 @@ class Main:
                                     # Capture the piece
                                     for i in range(len(self.cageBoardBlue)):
                                         if(self.cageBoardBlue[i] == "blank"):
-                                            self.cageBoardBlue[i] = pieceTo.getName()
+                                            if(pieceTo.getName() == "sheepzonbie"):
+                                                self.cageBoardBlue[i] = "sheep"
+                                            else:
+                                                self.cageBoardBlue[i] = pieceTo.getName()
                                             break
                             else:
                                     self.statusText = ""
@@ -595,29 +629,60 @@ class Main:
                     self.gameboard[x, y] = Panda(piece.color, "panda", "panda_blue_128", 1, piece.position);
 
 
-    def freeAnimalFromCage(self, clickedOnPositionBoard, color):
+    def selectAnimalInCage(self, clickedOnPositionBoard, color):
         # Cant set it out with cat
 
         if(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "a0"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[0]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[0];
         elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "b0"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[1]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[1];
         elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "c0"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[2]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[2];
         elif(self.gameWhosTurn == "blue" and clickedOnPositionBoard == "d0"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[3]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardBlue[3];
         elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "a5"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[0]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[0];
         elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "b5"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[1]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[1];
         elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "c5"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[2]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[2];
         elif(self.gameWhosTurn == "red" and clickedOnPositionBoard == "d5"):
-            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[3]
+            self.gameActivePieceName = "cage_" + color + "_" + self.cageBoardRed[3];
 
-
+        # Next click will be the same, but with the placement for the animal
         print("Freeing from position " + clickedOnPositionBoard + " color " + color + ". gameActivePieceName = " + self.gameActivePieceName)
 
+    def freeAnimalFromCage(self, clickedOnPositionBoard):
+            print("Now i selected where to place the caged animal " + self.gameActivePieceName + " to position " + clickedOnPositionBoard)
+
+            toArray = self.getPositionInArray(clickedOnPositionBoard)
+            toX = toArray[0]
+            toY = toArray[1]
 
 
+            # Check that I dont have any other animal there
+            checkForCrash = self.gameboard[toX, toY]
+            if(checkForCrash.getName() == "blank"):
+
+                if (self.gameActivePieceName == "cage_red_cat"):
+                    self.gameboard[toX, toY] = Cat("red", "cat", "cat_red_128", 1, clickedOnPositionBoard);
+                elif(self.gameActivePieceName == "cage_red_dog"):
+                    self.gameboard[toX, toY] = Dog("red", "dog", "dog_red_128", 1, clickedOnPositionBoard);
+                elif (self.gameActivePieceName == "cage_red_monkey"):
+                    self.gameboard[toX, toY] = Monkey("red", "monkey", "monkey_red_128", 1, clickedOnPositionBoard);
+                elif (self.gameActivePieceName == "cage_red_panda" or self.gameActivePieceName == "cage_red_sheep" or self.gameActivePieceName == "cage_red_sheepzombie"):
+                    self.gameboard[toX, toY] = SheepZombie("red", "sheepzombie", "sheep_red_128", 1, clickedOnPositionBoard);
+                elif(self.gameActivePieceName == "cage_blue_cat"):
+                    self.gameboard[toX, toY] = Cat("blue", "cat", "cat_blue_128", -1, clickedOnPositionBoard);
+                elif(self.gameActivePieceName == "cage_blue_dog"):
+                    self.gameboard[toX, toY] = Dog("red", "dog", "dog_blue128", 1, clickedOnPositionBoard);
+                elif(self.gameActivePieceName == "cage_blue_monkey"):
+                    self.gameboard[toX, toY] = Monkey("blue", "monkey", "monkey_blue_128", 1, clickedOnPositionBoard);
+                elif (self.gameActivePieceName == "cage_blue_panda" or self.gameActivePieceName == "cage_blue_sheep" or self.gameActivePieceName == "cage_blue_sheepzombie"):
+                    self.gameboard[toX, toY] = SheepZombie("blue", "sheepzombie", "sheep_blue_128", 1, clickedOnPositionBoard);
+
+                self.gameActivePieceName = ""
+
+                # Switch turn
+                self.changePlayersTurn()
 Main()
