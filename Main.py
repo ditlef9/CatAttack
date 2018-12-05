@@ -9,6 +9,7 @@ from Panda import Panda
 from Sheep import Sheep
 
 
+
 class Main:
     pygame.init()
     pygame.font.init()
@@ -53,8 +54,8 @@ class Main:
 
         # Game Board
         self.gameboard = {} # creates array that holds game
-        self.deadBoardRed =  ["" for x in range(4)]
-        self.deadboardBlue = ["" for x in range(4)]
+        self.cageBoardRed =  ["blank", "blank", "blank", "blank"]
+        self.cageBoardBlue = ["blank", "blank", "blank", "blank"]
         self.placePieces() # call method
 
         # Texts
@@ -84,7 +85,6 @@ class Main:
         self.gameboard[3, 1] = Cat("red", "cat", "cat_red_128", -1, "b4")
         self.gameboard[3, 2] = Monkey("red", "monkey", "monkey_red_128", -1, "c4");
 
-
     #- The game it self --------------------------------------------------------------------------------------------- #
     def main(self):
 
@@ -103,7 +103,9 @@ class Main:
                     clickedOnPositionBoard = self.clickPositionPixelToPositionBoard(clickPositionPixelX,
                                                                                     clickPositionPixelY)
 
-                    if(self.gameWinner == ""):
+                    # Check that Y is not out of range
+                    y = clickedOnPositionBoard[0]
+                    if(self.gameWinner == "" and y != "Z"):
                         self.selectOrMovePiece(clickedOnPositionBoard)
 
                     break
@@ -170,6 +172,7 @@ class Main:
             # Print board
             # Can also printBoardToConsole for debug
             self.printBoardToGraphics()
+            self.printCageToGraphics()
 
             # Print winner
             if(self.gameWinner == "red" or self.gameWinner == "blue"):
@@ -230,6 +233,23 @@ class Main:
 
             self.screen.blit(imagePiece, positionInPixels)
 
+    def printCageToGraphics(self):
+
+        for i in range(len(self.cageBoardBlue)):
+            if (self.cageBoardBlue[i] != "blank"):
+                filename = "animals/" + self.cageBoardBlue[i] + "_blue_64.png"
+                imagePiece = pygame.image.load(filename)
+                positionInPixels = (100, 200+(i*70))  # list
+                self.screen.blit(imagePiece, positionInPixels)
+
+        for i in range(len(self.cageBoardRed)):
+            if (self.cageBoardRed[i] != "blank"):
+                filename = "animals/" + self.cageBoardRed[i] + "_red_64.png"
+                imagePiece = pygame.image.load(filename)
+                positionInPixels = (930, 200+(i*70))  # list
+                self.screen.blit(imagePiece, positionInPixels)
+
+
 
     #- Positions, X, Y ---------------------------------------------------------------------------------------------- #
     # Takes in a position as "a1", "a2", etc and gives pixels back
@@ -275,15 +295,16 @@ class Main:
         }
         return position.get(pos)
 
-
-
     # - Take some random position clicked and return the square (example a1) ------------------------------------------#
     # input = 100, 200,
     def clickPositionPixelToPositionBoard(self, clickPositionPixelX, clickPositionPixelY):
         boardPositionX = ""
         boardPositionY = ""
 
-        if (clickPositionPixelX > 250 and clickPositionPixelX < 400):
+        # X
+        if (clickPositionPixelX > 100 and clickPositionPixelX < 164):
+            boardPositionX = "0" # blue cage
+        elif (clickPositionPixelX > 250 and clickPositionPixelX < 400):
             boardPositionX = "1"
         elif (clickPositionPixelX > 400 and clickPositionPixelX < 550):
             boardPositionX = "2"
@@ -291,19 +312,37 @@ class Main:
             boardPositionX = "3"
         elif (clickPositionPixelX > 700 and clickPositionPixelX < 850):
             boardPositionX = "4"
+        elif (clickPositionPixelX > 930 and clickPositionPixelX < 994):
+            boardPositionX = "5" # red cage
         else:
             boardPositionX = "-1"
 
-        if (clickPositionPixelY > 200 and clickPositionPixelY < 350):
-            boardPositionY = "a"
-        elif (clickPositionPixelY > 350 and clickPositionPixelY < 500):
-            boardPositionY = "b"
-        elif (clickPositionPixelY > 500 and clickPositionPixelY < 650):
-            boardPositionY = "c"
-        elif (clickPositionPixelY > 650 and clickPositionPixelY < 800):
-            boardPositionY = "d"
+        # Y
+        # Cage?
+        if(boardPositionX == "0" or boardPositionX == "5"):
+            if (clickPositionPixelY > 200 and clickPositionPixelY < 264):
+                boardPositionY = "a"
+            elif (clickPositionPixelY > 270 and clickPositionPixelY < 334):
+                boardPositionY = "b"
+            elif (clickPositionPixelY > 340 and clickPositionPixelY < 404):
+                boardPositionY = "c"
+            elif (clickPositionPixelY > 410 and clickPositionPixelY < 474):
+                boardPositionY = "d"
+            else:
+                boardPositionY = "Z"
         else:
-            boardPositionY = "Y Out of range", clickPositionPixelY
+            if (clickPositionPixelY > 200 and clickPositionPixelY < 350):
+                boardPositionY = "a"
+            elif (clickPositionPixelY > 350 and clickPositionPixelY < 500):
+                boardPositionY = "b"
+            elif (clickPositionPixelY > 500 and clickPositionPixelY < 650):
+                boardPositionY = "c"
+            elif (clickPositionPixelY > 650 and clickPositionPixelY < 800):
+                boardPositionY = "d"
+            else:
+                boardPositionY = "Z"
+
+        # print(str(clickPositionPixelX) + " = " + str(boardPositionX) + " " + str(clickPositionPixelY) + " = " + str(boardPositionY))
 
         xy = str(boardPositionY) + boardPositionX
 
@@ -316,6 +355,16 @@ class Main:
 
         # Find the animal located at that position
         mode = ""
+
+        # Look in cage first
+        if(clickedOnPositionBoard == "a0" or clickedOnPositionBoard == "b0" or clickedOnPositionBoard == "c0" or clickedOnPositionBoard == "d0"):
+            mode = "free_animal_from_blue_cage"
+            self.freeAnimalFromCage(clickedOnPositionBoard, "blue")
+        elif(clickedOnPositionBoard == "a5" or clickedOnPositionBoard == "b5" or clickedOnPositionBoard == "c5" or clickedOnPositionBoard == "d5"):
+            mode = "free_animal_from_red_cage"
+            self.freeAnimalFromCage(clickedOnPositionBoard, "red")
+
+        # Look on board
         for position,piece in self.gameboard.items():
             # print(type(piece), " ", piece.color, " ",  piece.name, " ",  piece.direction)
             # prints <class 'Sheep.Sheep'>   blue   sheep_blue_128   -1
@@ -357,59 +406,78 @@ class Main:
 
                 if (piece.color == self.gameWhosTurn and piece.name == self.gameActivePieceName):
 
-                    toArray = self.getPositionInArray(clickedOnPositionBoard)
-                    toX = toArray[0]
-                    toY = toArray[1]
+                    if(clickedOnPositionBoard != "a-1" and clickedOnPositionBoard != "b-1" and clickedOnPositionBoard != "c-1" and clickedOnPositionBoard != "d-1"):
 
-                    fromArray = self.getPositionInArray(piece.position)
-                    fromX = fromArray[0]
-                    fromY = fromArray[1]
+                        print("\n\n")
+                        print("I want to move " + piece.color + " " + piece.name + " at position " + clickedOnPositionBoard)
+
+                        toArray = self.getPositionInArray(clickedOnPositionBoard)
+                        toX = toArray[0]
+                        toY = toArray[1]
+
+                        fromArray = self.getPositionInArray(piece.position)
+                        fromX = fromArray[0]
+                        fromY = fromArray[1]
 
 
-                    print("\n\n")
-                    print("I want to move " + piece.color + " " + piece.name)
-                    print("from " + piece.position + " " + str(self.getPositionInArray(piece.position)) + " " + str(fromX) + " " + str(fromY))
-                    print("to " + clickedOnPositionBoard + " " + str(self.getPositionInArray(clickedOnPositionBoard)) + " " + str(toX) + " " + str(toY))
 
 
-                    # Move OK?
-                    isTheMoveOk = piece.availableMoves(self.getPositionInArray(piece.position), self.getPositionInArray(clickedOnPositionBoard))
+                        print("from " + piece.position + " " + str(self.getPositionInArray(piece.position)) + " " + str(fromX) + " " + str(fromY))
+                        print("to " + clickedOnPositionBoard + " " + str(self.getPositionInArray(clickedOnPositionBoard)) + " " + str(toX) + " " + str(toY))
 
-                    if (isTheMoveOk):
-                        print("Move is ok" + " for " + piece.color + " " + piece.name)
 
-                        # Check crash
-                        pieceTo = self.gameboard[toX, toY]
-                        if (pieceTo.getName() != "blank"):
-                            if (self.gameWhosTurn == "red"):
-                                self.statusText = "Blue " + pieceTo.getName() + " got killed!"
+                        # Move OK?
+                        isTheMoveOk = piece.availableMoves(self.getPositionInArray(piece.position), self.getPositionInArray(clickedOnPositionBoard))
+
+                        if (isTheMoveOk):
+                            print("Move is ok" + " for " + piece.color + " " + piece.name)
+
+                            # Check crash
+                            pieceTo = self.gameboard[toX, toY]
+                            if (pieceTo.getName() != "blank"):
+                                if (self.gameWhosTurn == "red"):
+                                    self.statusText = "Blue " + pieceTo.getName() + " got killed!"
+
+                                    # Capture the piece
+                                    for i in range(len(self.cageBoardRed)):
+                                        if(self.cageBoardRed[i] == "blank"):
+                                            self.cageBoardRed[i] = pieceTo.getName()
+                                            break
+
+
+                                else:
+                                    self.statusText = "Red " + pieceTo.getName() + " got killed!"
+
+                                    # Capture the piece
+                                    for i in range(len(self.cageBoardBlue)):
+                                        if(self.cageBoardBlue[i] == "blank"):
+                                            self.cageBoardBlue[i] = pieceTo.getName()
+                                            break
                             else:
-                                self.statusText = "Red " + pieceTo.getName() + " got killed!"
+                                    self.statusText = ""
+
+
+                            # Move it
+                            self.gameboard[toX, toY] = self.gameboard[fromX, fromY]
+
+                            # Move the piece
+                            piece.position = clickedOnPositionBoard
+
+                            # Fill old placement with blank
+                            self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
+
+                            # Add the pice to dead list
+                            # TODO: Dead list
+
+
+                            # Switch turn
+                            self.changePlayersTurn()
+
+                            break
                         else:
-                                self.statusText = ""
-
-
-                        # Move it
-                        self.gameboard[toX, toY] = self.gameboard[fromX, fromY]
-
-                        # Move the piece
-                        piece.position = clickedOnPositionBoard
-
-                        # Fill old placement with blank
-                        self.gameboard[fromX, fromY] = Blank("blank", "blank", "blank", 0, "a2");
-
-                        # Add the pice to dead list
-                        # TODO: Dead list
-
-
-                        # Switch turn
-                        self.changePlayersTurn()
-
-                        break
+                            print("Move is not ok" + " for " + piece.color + " " + piece.name)
                     else:
-                        print("Move is not ok" + " for " + piece.color + " " + piece.name)
-
-
+                        print("Move out of range")
 
 
         self.checkIfIHaveWon()
@@ -529,6 +597,11 @@ class Main:
                     y = array[1]
 
                     self.gameboard[x, y] = Panda(piece.color, "panda", "panda_blue_128", 1, piece.position);
+
+
+    def freeAnimalFromCage(self, clickedOnPositionBoard, color):
+        print("Freeing from position " + clickedOnPositionBoard + " color " + color)
+
 
 
 Main()
