@@ -11,8 +11,8 @@ The sheep can only move foward.
 The game is won by taking out the other players cat.
 
 
-![CatAttackScreenshot1](CatAttackScreenshot1)
-![CatAttackScreenshot2](CatAttackScreenshot2)
+![CatAttackScreenshot1](CatAttackScreenshot1.png)
+![CatAttackScreenshot2](CatAttackScreenshot2.png)
 
 
 # 2. How to Install Cat Attack on local machine
